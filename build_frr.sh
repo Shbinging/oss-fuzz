@@ -1,0 +1,1 @@
+python infra/helper.py build_image --pull frr

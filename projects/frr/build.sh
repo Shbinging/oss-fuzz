@@ -29,7 +29,7 @@ mkdir -p $OUT/lib
 (
 cd $SRC/libyang
 mkdir build; cd build
-cmake -DBUILD_SHARED_LIBS=OFF -DENABLE_LYD_PRIV=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_C_FLAGS="-fsanitize=address" -DENABLE_LYD_PRIV=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -D CMAKE_BUILD_TYPE:String="Release" ..
 make -j$(nproc)
 make install
@@ -37,10 +37,10 @@ make install
 
 # build project
 export ASAN_OPTIONS=detect_leaks=0
-export CFLAGS="${CFLAGS} -DFUZZING_OVERRIDE_LLVMFuzzerTestOneInput"
-export CXXFLAGS="${CXXFLAGS} -DFUZZING_OVERRIDE_LLVMFuzzerTestOneInput"
+export CFLAGS="${CFLAGS} -DFUZZING_OVERRIDE_LLVMFuzzerTestOneInput -fsanitize=address"
+export CXXFLAGS="${CXXFLAGS} -DFUZZING_OVERRIDE_LLVMFuzzerTestOneInput -fsanitize=address"
 ./bootstrap.sh
-./configure --enable-libfuzzer --enable-static --enable-static-bin --sbindir=$SRC/bin
+./configure --enable-libfuzzer --enable-address-sanitizer --enable-static --enable-static-bin --sbindir=$SRC/bin
 make -j$(nproc)
 make install
 cp ./lib/.libs/libfrr.so.0 $OUT/lib/
