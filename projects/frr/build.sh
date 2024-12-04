@@ -51,7 +51,7 @@ cp $SRC/bin/zebra $OUT/
 
 # build corpus
 cd $SRC/corpi
-find . -type d -maxdepth 1 | while read i; do zip -j $OUT/"$i"_seed_corpus.zip "$i"/*; done
+find . -type d -maxdepth 1 | while read i; do zip -r $OUT/"$i"_seed_corpus.zip "$i"/*; done
 
 find $OUT -maxdepth 1 -type f -executable | while read i; do
     grep "LLVMFuzzerTestOneInput" ${i} > /dev/null 2>&1 || continue
